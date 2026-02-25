@@ -1,17 +1,18 @@
 import axios from 'axios';
 
 // Detect if we're on Tailscale or localhost
-const getBaseURL = () => {
+const getBackendHost = () => {
   const host = window.location.hostname;
-  // If accessing via Tailscale IP, use it for backend too
   if (host !== 'localhost' && host !== '127.0.0.1') {
-    return `http://${host.split(':')[0]}:3001/api`;
+    return `http://${host.split(':')[0]}:3001`;
   }
-  return 'http://localhost:3001/api';
+  return 'http://localhost:3001';
 };
 
+export const BACKEND_URL = getBackendHost();
+
 const API = axios.create({
-  baseURL: getBaseURL(),
+  baseURL: `${BACKEND_URL}/api`,
 });
 
 export interface Song {
@@ -47,13 +48,23 @@ export const songService = {
     return res.data;
   },
 
-  async updateStatus(id: number, status: string, path?: string) {
-    const res = await API.patch(`/songs/${id}`, { status, path });
-    return res.data;
-  },
-
   async delete(id: number) {
     const res = await API.delete(`/songs/${id}`);
     return res.data;
-  }
+  },
+
+  async getVibes(): Promise<string[]> {
+    const res = await API.get<string[]>('/vibes');
+    return res.data;
+  },
+
+  async extractMetadata(url: string) {
+    const res = await API.post<{ title: string; artist: string }>('/metadata', { url });
+    return res.data;
+  },
+
+  async searchSong(description: string) {
+    const res = await API.post<{ title: string; artist: string; youtube_query?: string }>('/search-song', { description });
+    return res.data;
+  },
 };

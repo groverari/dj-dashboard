@@ -1,66 +1,45 @@
-import { useEffect, useState } from 'react';
-import { Song, songService } from '../services/api';
+import { useState } from 'react';
+import { Song } from '../services/api';
+import { SongItem } from './SongItem';
 
 interface LibraryProps {
-  triggerRefresh?: number;
+  songs: Song[];
+  onSongUpdated: () => void;
 }
 
-export function Library({ triggerRefresh }: LibraryProps) {
-  const [downloadedSongs, setDownloadedSongs] = useState<Song[]>([]);
-  const [loading, setLoading] = useState(true);
+export function Library({ songs, onSongUpdated }: LibraryProps) {
   const [selectedVibe, setSelectedVibe] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchDownloaded();
-  }, [triggerRefresh]);
-
-  const fetchDownloaded = async () => {
-    setLoading(true);
-    try {
-      const songs = await songService.getAll();
-      const downloaded = songs.filter((s) => s.status === 'done');
-      setDownloadedSongs(downloaded);
-    } catch (error) {
-      console.error('Error fetching downloaded songs:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  if (loading) {
-    return <div className="loading">📚 Loading library...</div>;
-  }
-
-  if (downloadedSongs.length === 0) {
+  if (songs.length === 0) {
     return (
       <div className="library">
         <h2>📚 Your Library</h2>
-        <p className="empty">No downloaded songs yet. Add and download some to get started!</p>
+        <p className="empty">No downloaded songs yet. Add some to get started!</p>
       </div>
     );
   }
 
-  const vibes = Array.from(new Set(downloadedSongs.map((s) => s.vibe))).sort();
+  const vibes = Array.from(new Set(songs.map((s) => s.vibe))).sort();
   const filteredSongs = selectedVibe
-    ? downloadedSongs.filter((s) => s.vibe === selectedVibe)
-    : downloadedSongs;
+    ? songs.filter((s) => s.vibe === selectedVibe)
+    : songs;
 
   const groupedByVibe = vibes.reduce((acc, vibe) => {
-    acc[vibe] = downloadedSongs.filter((s) => s.vibe === vibe);
+    acc[vibe] = songs.filter((s) => s.vibe === vibe);
     return acc;
   }, {} as Record<string, Song[]>);
 
   return (
     <div className="library">
       <h2>📚 Your Library</h2>
-      <p className="library-subtitle">{downloadedSongs.length} song(s) downloaded</p>
+      <p className="library-subtitle">{songs.length} song(s) downloaded</p>
 
       <div className="vibe-filter">
         <button
           className={`filter-btn ${selectedVibe === null ? 'active' : ''}`}
           onClick={() => setSelectedVibe(null)}
         >
-          All ({downloadedSongs.length})
+          All ({songs.length})
         </button>
         {vibes.map((vibe) => (
           <button
@@ -78,31 +57,7 @@ export function Library({ triggerRefresh }: LibraryProps) {
           <p className="no-songs">No songs in this category</p>
         ) : (
           filteredSongs.map((song) => (
-            <div key={song.id} className="library-song-card">
-              <div className="song-info">
-                <div className="song-title">{song.title}</div>
-                <div className="song-artist">{song.artist}</div>
-                <div className="song-meta">
-                  <span className="vibe-badge">{song.vibe}</span>
-                  <span className="path-text">📂 {song.path?.split('/').pop()}</span>
-                </div>
-              </div>
-              <div className="song-actions">
-                {song.path && (
-                  <button
-                    className="play-btn"
-                    title="Open file location"
-                    onClick={() => {
-                      // Copy path to clipboard for reference
-                      navigator.clipboard.writeText(song.path!);
-                      alert('Path copied: ' + song.path);
-                    }}
-                  >
-                    📍
-                  </button>
-                )}
-              </div>
-            </div>
+            <SongItem key={song.id} song={song} onUpdate={onSongUpdated} />
           ))
         )}
       </div>

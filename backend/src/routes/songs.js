@@ -1,7 +1,11 @@
 import { extractYouTubeMetadata } from '../services/metadata.js';
 import { searchSongByDescription } from '../services/qwen-search.js';
+import { createDuplicateDetector } from '../services/duplicateDetector.js';
+
+const YOUTUBE_URL_PATTERN = /^https?:\/\/(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/shorts\/|music\.youtube\.com\/watch\?v=)/;
 
 export function setupSongRoutes(app, db) {
+  const duplicateDetector = createDuplicateDetector(db);
   console.log('📝 Setting up song routes...');
 
   // Search for song by description (uses qwen7b)
@@ -62,23 +66,37 @@ export function setupSongRoutes(app, db) {
   });
 
   // POST new song
-  app.post('/api/songs', (req, res) => {
+  app.post('/api/songs', async (req, res) => {
     const { title, artist, url, vibe } = req.body;
-    
+
     if (!title || !artist || !url || !vibe) {
       return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    if (!YOUTUBE_URL_PATTERN.test(url)) {
+      return res.status(400).json({ error: 'Invalid YouTube URL. Please provide a valid youtube.com or youtu.be link.' });
+    }
+
+    try {
+      const { isDuplicate, existingId } = await duplicateDetector.check(title, artist, url);
+      if (isDuplicate) {
+        return res.status(409).json({ error: `This song already exists (id: ${existingId})` });
+      }
+    } catch (err) {
+      console.error('Duplicate check failed:', err);
+      // Continue anyway — better to allow an insert than block on a check failure
     }
 
     db.run('INSERT INTO songs (title, artist, url, vibe, status) VALUES (?, ?, ?, ?, ?)',
       [title, artist, url, vibe, 'pending'],
       function(err) {
         if (err) return res.status(400).json({ error: 'Duplicate URL or DB error' });
-        res.status(201).json({ 
-          id: this.lastID, 
-          title, 
-          artist, 
-          url, 
-          vibe, 
+        res.status(201).json({
+          id: this.lastID,
+          title,
+          artist,
+          url,
+          vibe,
           status: 'pending',
           dateAdded: new Date().toISOString()
         });

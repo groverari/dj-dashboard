@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Song, songService } from '../services/api';
+import { DEFAULT_VIBES } from '../constants';
 
 interface EditSongModalProps {
   song: Song;
@@ -14,14 +15,7 @@ export function EditSongModal({ song, isOpen, onClose, onSave }: EditSongModalPr
   const [vibe, setVibe] = useState(song.vibe);
   const [isSaving, setIsSaving] = useState(false);
 
-  const vibes = [
-    'New Punjabi (2010+)',
-    'Old School Punjabi (80s-90s)',
-    'Mid-2000s Punjabi',
-    'Old Bollywood Dance (70s-80s)',
-    'Modern Bollywood Dance',
-    'Romantic'
-  ];
+  const vibes = DEFAULT_VIBES;
 
   const handleSave = async () => {
     setIsSaving(true);

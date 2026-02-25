@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { songService, Song } from './services/api';
-import { YouTubeImporter } from './components/YouTubeImporter';
 import { SongDescriber } from './components/SongDescriber';
+import { SongList } from './components/SongList';
 import { Library } from './components/Library';
 
 function App() {
@@ -21,13 +21,15 @@ function App() {
 
   useEffect(() => {
     fetchSongs();
-    // Only poll if user is actively looking at the page (not in background)
     const interval = setInterval(() => {
-      if (document.hidden) return; // Don't fetch if tab is not visible
+      if (document.hidden) return;
       fetchSongs();
-    }, 30000); // Refresh every 30s instead of 5s
+    }, 30000);
     return () => clearInterval(interval);
   }, []);
+
+  const queueSongs = songs.filter((s) => s.status !== 'done');
+  const doneSongs = songs.filter((s) => s.status === 'done');
 
   return (
     <div className="app">
@@ -39,13 +41,15 @@ function App() {
       <main className="container">
         {error && <div className="error">{error}</div>}
 
-        <YouTubeImporter onSongAdded={fetchSongs} />
-        <SongDescriber />
-        <Library songs={songs} />
+        <SongDescriber onSongAdded={fetchSongs} />
+        {queueSongs.length > 0 && (
+          <SongList songs={queueSongs} onSongUpdated={fetchSongs} />
+        )}
+        <Library songs={doneSongs} onSongUpdated={fetchSongs} />
       </main>
 
       <footer className="footer">
-        <p>🪔 Built by Ramu Kaka • Auto-syncs every 5s</p>
+        <p>🪔 Built by Ramu Kaka • Auto-syncs every 30s</p>
       </footer>
     </div>
   );
