@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      - PORT=3001
+      - DB_PATH=../dj-dashboard.db
+      - EXTERNAL_DRIVE_PATH=/mnt/external-drive
+    volumes:
+      - ./dj-dashboard.db:/app/dj-dashboard.db
+      - /mnt/external-drive:/mnt/external-drive
+    command: npm start
+    networks:
+      - dj-net
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - dj-net
+
+networks:
+  dj-net:
+    driver: bridge

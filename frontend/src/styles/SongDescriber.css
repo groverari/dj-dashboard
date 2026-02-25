@@ -1,0 +1,230 @@
+.song-describer {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border: 2px solid #9d4edd;
+  border-radius: 12px;
+  padding: 24px;
+  margin: 24px 0;
+  color: #e0aaff;
+}
+
+.song-describer h2 {
+  margin: 0 0 8px 0;
+  color: #a0d995;
+  font-size: 20px;
+}
+
+.input-type-selector {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.type-btn {
+  flex: 1;
+  padding: 10px 16px;
+  border: 2px solid #9d4edd;
+  border-radius: 8px;
+  background: transparent;
+  color: #9d4edd;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.type-btn:hover {
+  border-color: #a0d995;
+  color: #a0d995;
+}
+
+.type-btn.active {
+  background: #9d4edd;
+  color: #0f3460;
+  border-color: #9d4edd;
+}
+
+.helper-text {
+  margin: 0 0 16px 0;
+  color: #9d4edd;
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+.description-input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #9d4edd;
+  border-radius: 8px;
+  background: #0f3460;
+  color: #e0aaff;
+  font-family: inherit;
+  font-size: 14px;
+  min-height: 80px;
+  resize: vertical;
+  transition: border-color 0.3s ease;
+}
+
+.description-input:focus {
+  outline: none;
+  border-color: #a0d995;
+  box-shadow: 0 0 8px rgba(160, 217, 149, 0.3);
+}
+
+.description-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.search-btn {
+  width: 100%;
+  padding: 12px;
+  margin-top: 12px;
+  background: linear-gradient(135deg, #9d4edd 0%, #a0d995 100%);
+  color: #0f3460;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.search-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(160, 217, 149, 0.3);
+}
+
+.search-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.error-message {
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.error-message.error {
+  background: rgba(255, 100, 100, 0.2);
+  color: #ff6464;
+  border: 1px solid #ff6464;
+}
+
+.error-message.success {
+  background: rgba(160, 217, 149, 0.2);
+  color: #a0d995;
+  border: 1px solid #a0d995;
+}
+
+.metadata-result {
+  margin-top: 20px;
+  padding: 16px;
+  background: rgba(157, 78, 221, 0.1);
+  border: 1px solid #9d4edd;
+  border-radius: 8px;
+}
+
+.metadata-field {
+  margin-bottom: 16px;
+}
+
+.metadata-field label {
+  display: block;
+  font-size: 12px;
+  color: #9d4edd;
+  margin-bottom: 4px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.metadata-value {
+  margin: 0;
+  padding: 8px 12px;
+  background: #0f3460;
+  border-radius: 6px;
+  color: #a0d995;
+  font-weight: 500;
+  word-break: break-word;
+}
+
+.vibe-selector {
+  margin-bottom: 16px;
+}
+
+.vibe-selector label {
+  display: block;
+  font-size: 12px;
+  color: #9d4edd;
+  margin-bottom: 8px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.vibe-selector select,
+.custom-vibe-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #9d4edd;
+  border-radius: 6px;
+  background: #0f3460;
+  color: #e0aaff;
+  font-size: 14px;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+  margin-bottom: 8px;
+}
+
+.custom-vibe-input {
+  cursor: text;
+  font-family: inherit;
+}
+
+.vibe-selector select:focus,
+.custom-vibe-input:focus {
+  outline: none;
+  border-color: #a0d995;
+}
+
+.custom-vibe-btn {
+  width: 100%;
+  padding: 10px 12px;
+  background: transparent;
+  border: 1px dashed #9d4edd;
+  border-radius: 6px;
+  color: #9d4edd;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 8px;
+}
+
+.custom-vibe-btn:hover {
+  border-color: #a0d995;
+  color: #a0d995;
+  background: rgba(160, 217, 149, 0.05);
+}
+
+.add-btn {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(135deg, #a0d995 0%, #9d4edd 100%);
+  color: #0f3460;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.add-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(160, 217, 149, 0.3);
+}
+
+.add-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

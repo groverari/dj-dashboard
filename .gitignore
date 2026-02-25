@@ -1,0 +1,13 @@
+node_modules/
+.env
+.env.local
+*.log
+dist/
+build/
+.DS_Store
+dj-dashboard.db
+downloads/
+*.mp3
+*.m4a
+*.wav
+SONGS_TO_ADD.md
