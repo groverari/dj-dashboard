@@ -4,7 +4,7 @@ import { createDuplicateDetector } from '../services/duplicateDetector.js';
 
 const YOUTUBE_URL_PATTERN = /^https?:\/\/(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/shorts\/|music\.youtube\.com\/watch\?v=)/;
 
-export function setupSongRoutes(app, db) {
+export function setupSongRoutes(app, db, downloader) {
   const duplicateDetector = createDuplicateDetector(db);
   console.log('📝 Setting up song routes...');
 
@@ -91,8 +91,9 @@ export function setupSongRoutes(app, db) {
       [title, artist, url, vibe, 'pending'],
       function(err) {
         if (err) return res.status(400).json({ error: 'Duplicate URL or DB error' });
+        const songId = this.lastID;
         res.status(201).json({
-          id: this.lastID,
+          id: songId,
           title,
           artist,
           url,
@@ -100,6 +101,11 @@ export function setupSongRoutes(app, db) {
           status: 'pending',
           dateAdded: new Date().toISOString()
         });
+
+        // Immediately queue for download instead of waiting for 30s scanner
+        if (downloader) {
+          downloader.queue(songId, title, artist, url, vibe);
+        }
       }
     );
   });

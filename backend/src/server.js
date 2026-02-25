@@ -40,7 +40,7 @@ app.use((req, res, next) => {
     });
 
     // Setup routes
-    setupSongRoutes(app, db);
+    setupSongRoutes(app, db, downloader);
 
     app.listen(PORT, '0.0.0.0', () => {
       console.log(`🎧 DJ Dashboard Backend running on http://0.0.0.0:${PORT}`);
